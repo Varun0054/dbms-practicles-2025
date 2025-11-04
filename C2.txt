@@ -1,0 +1,31 @@
+Connectivity Practical C2 — MySQL connectivity outline
+
+Example: Python + mysql-connector-python
+
+```python
+import mysql.connector as mysql
+
+conn = mysql.connect(host='localhost', user='root', password='pass', database='testdb')
+cur = conn.cursor()
+
+# Create
+cur.execute("INSERT INTO customers (CNo, Cname) VALUES (%s,%s)", (1,'Gopal'))
+conn.commit()
+
+# Read
+cur.execute("SELECT * FROM customers")
+for row in cur.fetchall():
+    print(row)
+
+# Update
+cur.execute("UPDATE customers SET Cname=%s WHERE CNo=%s", ('Gopal Kumar',1))
+conn.commit()
+
+# Delete
+cur.execute("DELETE FROM customers WHERE CNo=%s", (1,))
+conn.commit()
+
+cur.close(); conn.close()
+```
+
+

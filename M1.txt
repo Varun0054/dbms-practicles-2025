@@ -1,0 +1,44 @@
+Mongo Practical M1 — Employee CRUD queries
+
+Sample documents structure:
+```javascript
+{
+  name: { FName: 'A', LName: 'B' },
+  Company_name: 'TCS',
+  Salary: 40000,
+  Designation: 'Programmer',
+  Age: 26,
+  Expertise: ['Mongodb','Mysql','Cassandra'],
+  DOB: ISODate('1999-01-01'),
+  Email: 'a@example.com',
+  Contact: '9999999999',
+  Address: [{ PAddr: 'X', LAddr: 'Y' }]
+}
+```
+
+Queries:
+```javascript
+// 1
+db.employee.find({ Designation: 'Programmer', Salary: { $gt: 30000 } })
+
+// 2 upsert
+db.employee.updateOne(
+  { Designation: 'Tester', Company_name: 'TCS', Age: 25 },
+  { $setOnInsert: { name:{FName:'T',LName:'E'}, Salary: 25000 } },
+  { upsert: true }
+)
+
+// 3 increase Infosys salary by 10000
+db.employee.updateMany({ Company_name: 'Infosys' }, { $inc: { Salary: 10000 } })
+
+// 4 reduce TCS salary by 5000
+db.employee.updateMany({ Company_name: 'TCS' }, { $inc: { Salary: -5000 } })
+
+// 5 not equal Tester
+db.employee.find({ Designation: { $ne: 'Tester' } })
+
+// 6 exact array match
+db.employee.find({ Expertise: ['Mongodb','Mysql','Cassandra'] })
+```
+
+

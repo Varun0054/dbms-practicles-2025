@@ -1,0 +1,27 @@
+Mongo Practical M3 — Employee queries (Emp_id variant)
+
+```javascript
+// 1 upsert Tester TCS 25
+db.employee.updateOne(
+  { Designation: 'Tester', Company_name: 'TCS', Age: 25 },
+  { $setOnInsert: { Emp_id: 1 } },
+  { upsert: true }
+)
+
+// 2 increase salary +2000 for TCS
+db.employee.updateMany({ Company_name: 'TCS' }, { $inc: { Salary: 2000 } })
+
+// 3 match embedded Address exactly city Pune and Pin_code 411001
+db.employee.find({ Address: { $elemMatch: { city: 'Pune', Pin_code: '411001' } } })
+
+// 4 Developer or Tester
+db.employee.find({ Designation: { $in: ['Developer','Tester'] } })
+
+// 5 drop single where designation=Developer
+db.employee.deleteOne({ Designation: 'Developer' })
+
+// 6 count
+db.employee.countDocuments()
+```
+
+

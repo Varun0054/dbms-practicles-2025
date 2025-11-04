@@ -1,0 +1,29 @@
+PL/SQL Practical P3 — Merge N_RollCall into O_RollCall using cursor
+
+```sql
+-- Assume structure: (roll_no, name, ...)
+
+DECLARE
+  CURSOR c_new IS SELECT * FROM N_RollCall;
+  v_row N_RollCall%ROWTYPE;
+  v_exists NUMBER;
+BEGIN
+  OPEN c_new;
+  LOOP
+    FETCH c_new INTO v_row;
+    EXIT WHEN c_new%NOTFOUND;
+
+    SELECT COUNT(*) INTO v_exists
+    FROM O_RollCall
+    WHERE roll_no = v_row.roll_no;
+
+    IF v_exists = 0 THEN
+      INSERT INTO O_RollCall VALUES v_row;
+    END IF;
+  END LOOP;
+  CLOSE c_new;
+END;
+/
+```
+
+

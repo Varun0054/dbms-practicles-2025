@@ -1,0 +1,38 @@
+PL/SQL Practical P8 — Row-level BEFORE/AFTER trigger with audit
+
+```sql
+CREATE TABLE Library (
+  id NUMBER PRIMARY KEY,
+  title VARCHAR2(200),
+  author VARCHAR2(100)
+);
+
+CREATE TABLE Library_Audit (
+  id NUMBER,
+  title VARCHAR2(200),
+  author VARCHAR2(100),
+  action VARCHAR2(10),
+  changed_on DATE DEFAULT SYSDATE
+);
+```
+
+```sql
+CREATE OR REPLACE TRIGGER trg_library_audit
+AFTER INSERT OR UPDATE OR DELETE ON Library
+FOR EACH ROW
+BEGIN
+  IF INSERTING THEN
+    INSERT INTO Library_Audit(id, title, author, action)
+    VALUES (:NEW.id, :NEW.title, :NEW.author, 'INSERT');
+  ELSIF UPDATING THEN
+    INSERT INTO Library_Audit(id, title, author, action)
+    VALUES (:OLD.id, :OLD.title, :OLD.author, 'UPDATE');
+  ELSIF DELETING THEN
+    INSERT INTO Library_Audit(id, title, author, action)
+    VALUES (:OLD.id, :OLD.title, :OLD.author, 'DELETE');
+  END IF;
+END;
+/
+```
+
+

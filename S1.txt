@@ -1,0 +1,183 @@
+MySQL Practical S1
+
+Schema (create with appropriate constraints):
+
+```sql
+CREATE TABLE Branch (
+  branch_name VARCHAR(100) PRIMARY KEY,
+  branch_city VARCHAR(100) NOT NULL,
+  assets DECIMAL(15,2) DEFAULT 0
+);
+
+CREATE TABLE Account (
+  acc_no INT PRIMARY KEY,
+  branch_name VARCHAR(100) NOT NULL,
+  balance DECIMAL(15,2) NOT NULL,
+  CONSTRAINT fk_account_branch FOREIGN KEY (branch_name)
+    REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Customer (
+  cust_name VARCHAR(100) PRIMARY KEY,
+  cust_street VARCHAR(200),
+  cust_city VARCHAR(100)
+);
+
+CREATE TABLE Depositor (
+  cust_name VARCHAR(100) NOT NULL,
+  acc_no INT NOT NULL,
+  PRIMARY KEY (cust_name, acc_no),
+  CONSTRAINT fk_depositor_customer FOREIGN KEY (cust_name)
+    REFERENCES Customer(cust_name),
+  CONSTRAINT fk_depositor_account FOREIGN KEY (acc_no)
+    REFERENCES Account(acc_no)
+);
+
+CREATE TABLE Loan (
+  loan_no INT PRIMARY KEY,
+  branch_name VARCHAR(100) NOT NULL,
+  amount DECIMAL(15,2) NOT NULL,
+  CONSTRAINT fk_loan_branch FOREIGN KEY (branch_name)
+    REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Borrower (
+  cust_name VARCHAR(100) NOT NULL,
+  loan_no INT NOT NULL,
+  PRIMARY KEY (cust_name, loan_no),
+  CONSTRAINT fk_borrower_customer FOREIGN KEY (cust_name)
+    REFERENCES Customer(cust_name),
+  CONSTRAINT fk_borrower_loan FOREIGN KEY (loan_no)
+    REFERENCES Loan(loan_no)
+);
+```
+
+Solutions:
+
+1) Names of all branches in loan relation
+```sql
+SELECT DISTINCT branch_name
+FROM Loan;
+```
+
+2) All loan numbers for loans at 'Wadia College' with amount > 12000
+```sql
+SELECT loan_no
+FROM Loan
+WHERE branch_name = 'Wadia College' AND amount > 12000;
+```
+
+3) All customers who have a loan (name, loan_no, amount)
+```sql
+SELECT b.cust_name, l.loan_no, l.amount
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no;
+```
+
+4) Customers in alphabetical order who have loan from 'Wadia College'
+```sql
+SELECT DISTINCT b.cust_name
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no
+WHERE l.branch_name = 'Wadia College'
+ORDER BY b.cust_name ASC;
+```
+
+5) Distinct cities of branch
+```sql
+SELECT DISTINCT branch_city
+FROM Branch;
+```
+
+MySQL Practical S1
+
+Schema (create with appropriate constraints):
+
+```sql
+CREATE TABLE Branch (
+  branch_name VARCHAR(100) PRIMARY KEY,
+  branch_city VARCHAR(100) NOT NULL,
+  assets DECIMAL(15,2) DEFAULT 0
+);
+
+CREATE TABLE Account (
+  acc_no INT PRIMARY KEY,
+  branch_name VARCHAR(100) NOT NULL,
+  balance DECIMAL(15,2) NOT NULL,
+  CONSTRAINT fk_account_branch FOREIGN KEY (branch_name)
+    REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Customer (
+  cust_name VARCHAR(100) PRIMARY KEY,
+  cust_street VARCHAR(200),
+  cust_city VARCHAR(100)
+);
+
+CREATE TABLE Depositor (
+  cust_name VARCHAR(100) NOT NULL,
+  acc_no INT NOT NULL,
+  PRIMARY KEY (cust_name, acc_no),
+  CONSTRAINT fk_depositor_customer FOREIGN KEY (cust_name)
+    REFERENCES Customer(cust_name),
+  CONSTRAINT fk_depositor_account FOREIGN KEY (acc_no)
+    REFERENCES Account(acc_no)
+);
+
+CREATE TABLE Loan (
+  loan_no INT PRIMARY KEY,
+  branch_name VARCHAR(100) NOT NULL,
+  amount DECIMAL(15,2) NOT NULL,
+  CONSTRAINT fk_loan_branch FOREIGN KEY (branch_name)
+    REFERENCES Branch(branch_name)
+);
+
+CREATE TABLE Borrower (
+  cust_name VARCHAR(100) NOT NULL,
+  loan_no INT NOT NULL,
+  PRIMARY KEY (cust_name, loan_no),
+  CONSTRAINT fk_borrower_customer FOREIGN KEY (cust_name)
+    REFERENCES Customer(cust_name),
+  CONSTRAINT fk_borrower_loan FOREIGN KEY (loan_no)
+    REFERENCES Loan(loan_no)
+);
+```
+
+Solutions:
+
+1) Names of all branches in loan relation
+```sql
+SELECT DISTINCT branch_name
+FROM Loan;
+```
+
+2) All loan numbers for loans at 'Wadia College' with amount > 12000
+```sql
+SELECT loan_no
+FROM Loan
+WHERE branch_name = 'Wadia College' AND amount > 12000;
+```
+
+3) All customers who have a loan (name, loan_no, amount)
+```sql
+SELECT b.cust_name, l.loan_no, l.amount
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no;
+```
+
+4) Customers in alphabetical order who have loan from 'Wadia College'
+```sql
+SELECT DISTINCT b.cust_name
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no
+WHERE l.branch_name = 'Wadia College'
+ORDER BY b.cust_name ASC;
+```
+
+5) Distinct cities of branch
+```sql
+SELECT DISTINCT branch_city
+FROM Branch;
+```
+
+

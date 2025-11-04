@@ -1,0 +1,152 @@
+MySQL Practical S8
+
+Schema:
+
+```sql
+CREATE TABLE Companies (
+  comp_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  cost DECIMAL(15,2) NOT NULL,
+  year INT
+);
+
+CREATE TABLE Orders (
+  comp_id INT NOT NULL,
+  domain VARCHAR(100) NOT NULL,
+  quantity INT NOT NULL,
+  PRIMARY KEY (comp_id, domain),
+  CONSTRAINT fk_orders_companies FOREIGN KEY (comp_id)
+    REFERENCES Companies(comp_id)
+);
+```
+
+Solutions:
+
+1) Inner join
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+2) Left outer join
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+LEFT JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+3) Right outer join
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+RIGHT JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+4) Union example
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+JOIN Orders o ON o.comp_id = c.comp_id
+UNION
+SELECT c.name, c.cost, NULL, NULL
+FROM Companies c;
+```
+
+5) View1: company name and quantities
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT c.name AS company_name, o.quantity
+FROM Companies c
+JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+6) View2 (two columns) and I/U/D on base table; 7) Display View1, View2
+```sql
+CREATE OR REPLACE VIEW View2 AS SELECT comp_id, name FROM Companies;
+SELECT * FROM View1; SELECT * FROM View2;
+```
+
+MySQL Practical S8
+
+Schema:
+
+```sql
+CREATE TABLE Companies (
+  comp_id INT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  cost DECIMAL(15,2) NOT NULL,
+  year INT
+);
+
+CREATE TABLE Orders (
+  comp_id INT NOT NULL,
+  domain VARCHAR(100) NOT NULL,
+  quantity INT NOT NULL,
+  PRIMARY KEY (comp_id, domain),
+  CONSTRAINT fk_orders_companies FOREIGN KEY (comp_id)
+    REFERENCES Companies(comp_id)
+);
+```
+
+Solutions:
+
+1) Inner join
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+2) Left outer join
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+LEFT JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+3) Right outer join
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+RIGHT JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+4) Union example (combine result sets)
+```sql
+SELECT c.name, c.cost, o.domain, o.quantity
+FROM Companies c
+JOIN Orders o ON o.comp_id = c.comp_id
+UNION
+SELECT c.name, c.cost, NULL AS domain, NULL AS quantity
+FROM Companies c;
+```
+
+5) Create View1: company name and quantities
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT c.name AS company_name, o.quantity
+FROM Companies c
+JOIN Orders o ON o.comp_id = c.comp_id;
+```
+
+6) Create View2 with any two columns and perform I/U/D
+```sql
+CREATE OR REPLACE VIEW View2 AS
+SELECT comp_id, name FROM Companies;
+
+-- Operate on base table for reliability
+INSERT INTO Companies (comp_id, name, cost, year) VALUES (1001,'X Corp',5000,2020);
+UPDATE Companies SET name = 'X Corporation' WHERE comp_id = 1001;
+DELETE FROM Companies WHERE comp_id = 1001;
+```
+
+7) Display content of View1, View2
+```sql
+SELECT * FROM View1;
+SELECT * FROM View2;
+```
+
+Note: RIGHT JOIN support depends on MySQL version; modern MySQL supports it.
+
+

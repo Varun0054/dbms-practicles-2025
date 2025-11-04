@@ -1,0 +1,142 @@
+MySQL Practical S9
+
+Schema:
+
+```sql
+CREATE TABLE CUSTOMERS (
+  CNo INT PRIMARY KEY,
+  Cname VARCHAR(100) NOT NULL,
+  Ccity VARCHAR(100),
+  CMobile VARCHAR(20)
+);
+
+CREATE TABLE ITEMS (
+  INo INT PRIMARY KEY,
+  Iname VARCHAR(100) NOT NULL,
+  Itype VARCHAR(50) NOT NULL,
+  Iprice DECIMAL(10,2) NOT NULL,
+  Icount INT NOT NULL
+);
+
+CREATE TABLE PURCHASE (
+  PNo INT PRIMARY KEY,
+  Pdate DATE NOT NULL,
+  Pquantity INT NOT NULL,
+  CNo INT NOT NULL,
+  INo INT NOT NULL,
+  CONSTRAINT fk_purchase_customer FOREIGN KEY (CNo) REFERENCES CUSTOMERS(CNo),
+  CONSTRAINT fk_purchase_item FOREIGN KEY (INo) REFERENCES ITEMS(INo)
+);
+```
+
+Queries:
+
+```sql
+-- 1
+SELECT * FROM ITEMS WHERE Itype = 'stationary' AND Iprice BETWEEN 400 AND 1000;
+-- 2
+UPDATE CUSTOMERS SET CMobile = '9999999999' WHERE Cname = 'Gopal';
+-- 3
+SELECT * FROM ITEMS ORDER BY Iprice DESC LIMIT 1;
+-- 4
+SELECT * FROM PURCHASE ORDER BY Pdate DESC;
+-- 5
+SELECT Ccity, COUNT(*) AS num_customers FROM CUSTOMERS GROUP BY Ccity;
+-- 6
+SELECT SUM(p.Pquantity) AS total_quantity
+FROM PURCHASE p JOIN CUSTOMERS c ON c.CNo = p.CNo
+WHERE c.Cname = 'Maya';
+-- 7
+CREATE OR REPLACE VIEW StationaryView AS
+SELECT Iname, Iprice AS Price, Icount AS Count FROM ITEMS
+WHERE Itype = 'stationary' ORDER BY Iprice DESC;
+```
+
+MySQL Practical S9
+
+Schema:
+
+```sql
+CREATE TABLE CUSTOMERS (
+  CNo INT PRIMARY KEY,
+  Cname VARCHAR(100) NOT NULL,
+  Ccity VARCHAR(100),
+  CMobile VARCHAR(20)
+);
+
+CREATE TABLE ITEMS (
+  INo INT PRIMARY KEY,
+  Iname VARCHAR(100) NOT NULL,
+  Itype VARCHAR(50) NOT NULL,
+  Iprice DECIMAL(10,2) NOT NULL,
+  Icount INT NOT NULL
+);
+
+CREATE TABLE PURCHASE (
+  PNo INT PRIMARY KEY,
+  Pdate DATE NOT NULL,
+  Pquantity INT NOT NULL,
+  CNo INT NOT NULL,
+  INo INT NOT NULL,
+  CONSTRAINT fk_purchase_customer FOREIGN KEY (CNo) REFERENCES CUSTOMERS(CNo),
+  CONSTRAINT fk_purchase_item FOREIGN KEY (INo) REFERENCES ITEMS(INo)
+);
+```
+
+Solutions:
+
+1) List all stationary items with price between 400 and 1000
+```sql
+SELECT *
+FROM ITEMS
+WHERE Itype = 'stationary' AND Iprice BETWEEN 400 AND 1000;
+```
+
+2) Change the mobile number of customer "Gopal"
+```sql
+UPDATE CUSTOMERS
+SET CMobile = '9999999999'
+WHERE Cname = 'Gopal';
+```
+
+3) Display the item with maximum price
+```sql
+SELECT *
+FROM ITEMS
+ORDER BY Iprice DESC
+LIMIT 1;
+```
+
+4) Display all purchases sorted from most recent to oldest
+```sql
+SELECT *
+FROM PURCHASE
+ORDER BY Pdate DESC;
+```
+
+5) Count the number of customers in every city
+```sql
+SELECT Ccity, COUNT(*) AS num_customers
+FROM CUSTOMERS
+GROUP BY Ccity
+ORDER BY Ccity;
+```
+
+6) Display all purchased quantity of Customer Maya
+```sql
+SELECT SUM(p.Pquantity) AS total_quantity
+FROM PURCHASE p
+JOIN CUSTOMERS c ON c.CNo = p.CNo
+WHERE c.Cname = 'Maya';
+```
+
+7) Create view: Iname, Price and Count of all stationary items in descending price
+```sql
+CREATE OR REPLACE VIEW StationaryView AS
+SELECT Iname, Iprice AS Price, Icount AS Count
+FROM ITEMS
+WHERE Itype = 'stationary'
+ORDER BY Iprice DESC;
+```
+
+

@@ -1,0 +1,29 @@
+PL/SQL Practical P5 — Increase salary by 10% if below average; log
+
+```sql
+CREATE TABLE emp (
+  emp_no NUMBER PRIMARY KEY,
+  salary NUMBER(10,2)
+);
+
+CREATE TABLE increment_salary (
+  emp_no NUMBER,
+  salary NUMBER(10,2),
+  changed_on DATE DEFAULT SYSDATE
+);
+```
+
+```sql
+DECLARE
+  v_avg NUMBER;
+BEGIN
+  SELECT AVG(salary) INTO v_avg FROM emp;
+  FOR r IN (SELECT emp_no, salary FROM emp WHERE salary < v_avg) LOOP
+    UPDATE emp SET salary = salary * 1.10 WHERE emp_no = r.emp_no;
+    INSERT INTO increment_salary(emp_no, salary) VALUES (r.emp_no, r.salary*1.10);
+  END LOOP;
+END;
+/
+```
+
+

@@ -1,0 +1,133 @@
+MySQL Practical S5
+
+Schema:
+
+```sql
+CREATE TABLE Company (
+  company_name VARCHAR(100) PRIMARY KEY,
+  city VARCHAR(100)
+);
+
+CREATE TABLE Employee (
+  emp_id INT PRIMARY KEY,
+  employee_name VARCHAR(100) NOT NULL,
+  street VARCHAR(200),
+  city VARCHAR(100)
+);
+
+CREATE TABLE Works (
+  employee_name VARCHAR(100) NOT NULL,
+  company_name VARCHAR(100) NOT NULL,
+  salary DECIMAL(15,2) NOT NULL,
+  PRIMARY KEY (employee_name, company_name),
+  CONSTRAINT fk_works_emp FOREIGN KEY (employee_name)
+    REFERENCES Employee(employee_name),
+  CONSTRAINT fk_works_company FOREIGN KEY (company_name)
+    REFERENCES Company(company_name)
+);
+
+CREATE TABLE Manages (
+  employee_name VARCHAR(100) PRIMARY KEY,
+  manager_name  VARCHAR(100)
+);
+```
+
+Solutions:
+
+1) Employees who work for 'TCS'
+```sql
+SELECT employee_name
+FROM Works
+WHERE company_name = 'TCS';
+```
+
+2) Names and company names sorted
+```sql
+SELECT employee_name, company_name
+FROM Works
+ORDER BY company_name ASC, employee_name DESC;
+```
+
+3) Update city to 'Bangalore' for employees at InfoSys
+```sql
+UPDATE Employee AS e
+JOIN Works AS w ON w.employee_name = e.employee_name
+SET e.city = 'Bangalore'
+WHERE w.company_name = 'InfoSys';
+```
+
+4) Names, street, cities for 'TechM' with salary > 10000
+```sql
+SELECT e.employee_name, e.street, e.city
+FROM Employee AS e
+JOIN Works AS w ON w.employee_name = e.employee_name
+WHERE w.company_name = 'TechM' AND w.salary > 10000;
+```
+
+5) Add column Asset to Company
+```sql
+ALTER TABLE Company ADD COLUMN asset DECIMAL(15,2) DEFAULT 0;
+```
+
+MySQL Practical S7
+
+Schema (same as S1): Branch, Account, Customer, Depositor, Loan, Borrower.
+
+Solutions:
+
+1) View1: customers in alphabetical order who have loan from Pune_Station branch
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT DISTINCT b.cust_name
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no
+WHERE l.branch_name = 'Pune_Station'
+ORDER BY b.cust_name ASC;
+```
+
+2) View2 on branch table (two columns) and perform I/U/D
+```sql
+CREATE OR REPLACE VIEW View2 AS
+SELECT branch_name, branch_city FROM Branch;
+
+-- Insert/Update/Delete on views depend on updatability rules; alternatively operate on base table:
+INSERT INTO Branch(branch_name, branch_city) VALUES ('Sample_Branch','Pune');
+UPDATE Branch SET branch_city = 'Mumbai' WHERE branch_name = 'Sample_Branch';
+DELETE FROM Branch WHERE branch_name = 'Sample_Branch';
+```
+
+3) View3 on borrower and depositor (one column from each) and I/U/D
+```sql
+CREATE OR REPLACE VIEW View3 AS
+SELECT br.cust_name AS borrower_name, de.cust_name AS depositor_name
+FROM Borrower br
+CROSS JOIN Depositor de;
+
+-- Typically not updatable; perform I/U/D on base tables instead.
+```
+
+4) Union of left and right join for all customers who have account or loan or both
+```sql
+-- Full outer join emulation using UNION of left and right joins
+SELECT d.cust_name AS cust_name
+FROM Depositor d
+LEFT JOIN Borrower b ON b.cust_name = d.cust_name
+UNION
+SELECT b.cust_name
+FROM Borrower b
+RIGHT JOIN Depositor d ON d.cust_name = b.cust_name;
+```
+
+5) Create Simple and Unique index
+```sql
+CREATE INDEX idx_account_branch ON Account(branch_name);
+CREATE UNIQUE INDEX ux_customer_name ON Customer(cust_name);
+```
+
+6) Display index information
+```sql
+SHOW INDEX FROM Account;
+SHOW INDEX FROM Customer;
+```
+
+

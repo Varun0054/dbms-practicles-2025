@@ -1,0 +1,27 @@
+Mongo Practical M2 — Employee queries
+
+```javascript
+// 1 first+last name where age < 30 and salary > 50000
+db.employee.find({ Age: { $lt: 30 }, Salary: { $gt: 50000 } }, { 'name.FName':1, 'name.LName':1 })
+
+// 2 upsert Tester TCS Age 25
+db.employee.updateOne(
+  { Designation: 'Tester', Company_name: 'TCS', Age: 25 },
+  { $setOnInsert: { Salary: 25000 } },
+  { upsert: true }
+)
+
+// 3 age < 30 OR salary > 40000
+db.employee.find({ $or: [ { Age: { $lt: 30 } }, { Salary: { $gt: 40000 } } ] })
+
+// 4 Designation != Developer
+db.employee.find({ Designation: { $ne: 'Developer' } })
+
+// 5 select fields where Company_name is Infosys
+db.employee.find({ Company_name: 'Infosys' }, { _id:1, Designation:1, Address:1, name:1 })
+
+// 6 display only first and last names
+db.employee.find({}, { 'name.FName':1, 'name.LName':1, _id:0 })
+```
+
+

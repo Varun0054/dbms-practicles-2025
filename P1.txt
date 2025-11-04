@@ -1,0 +1,23 @@
+PL/SQL Practical P1 — Areas of circle (radius 5..9)
+
+```sql
+CREATE TABLE areas (
+  radius NUMBER PRIMARY KEY,
+  area   NUMBER
+);
+```
+
+```sql
+DECLARE
+  v_radius NUMBER;
+  v_area   NUMBER;
+BEGIN
+  FOR v_radius IN 5..9 LOOP
+    v_area := 3.14159265358979 * v_radius * v_radius;
+    INSERT INTO areas(radius, area) VALUES (v_radius, v_area);
+  END LOOP;
+END;
+/
+```
+
+

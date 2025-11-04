@@ -1,0 +1,26 @@
+Connectivity Practical C1 — MongoDB connectivity outline
+
+Provide a small script in your chosen language. Example: Python + PyMongo
+
+```python
+from pymongo import MongoClient
+
+client = MongoClient('mongodb://localhost:27017')
+db = client['testdb']
+employee = db['employee']
+
+# Create
+employee.insert_one({ 'name': {'FName':'A','LName':'B'}, 'Company_name':'TCS' })
+
+# Read
+for doc in employee.find({}):
+    print(doc)
+
+# Update
+employee.update_one({ 'Company_name':'TCS' }, { '$set': { 'Company_name':'Tata Consultancy' } })
+
+# Delete
+employee.delete_one({ 'Company_name':'Tata Consultancy' })
+```
+
+

@@ -1,0 +1,195 @@
+MySQL Practical S4
+
+Schema and sample operations:
+
+```sql
+CREATE TABLE Cust_Master (
+  Cust_no   VARCHAR(20) PRIMARY KEY,
+  Cust_name VARCHAR(100) NOT NULL,
+  Cust_addr VARCHAR(200)
+);
+
+CREATE TABLE `Order` (
+  Order_no   VARCHAR(20) PRIMARY KEY,
+  Cust_no    VARCHAR(20) NOT NULL,
+  Order_date DATE NOT NULL,
+  Qty_Ordered INT NOT NULL,
+  CONSTRAINT fk_order_customer FOREIGN KEY (Cust_no)
+    REFERENCES Cust_Master(Cust_no)
+);
+
+CREATE TABLE Product (
+  Product_no   VARCHAR(20) PRIMARY KEY,
+  Product_name VARCHAR(100) NOT NULL,
+  Order_no     VARCHAR(20) NOT NULL,
+  CONSTRAINT fk_product_order FOREIGN KEY (Order_no)
+    REFERENCES `Order`(Order_no)
+);
+```
+
+Solutions:
+
+1) Customers with 'A' as second letter
+```sql
+SELECT Cust_name
+FROM Cust_Master
+WHERE Cust_name LIKE '_A%';
+```
+
+2) Orders from specific customers
+```sql
+SELECT *
+FROM `Order`
+WHERE Cust_no IN ('C1002','C1005','C1007','C1008');
+```
+
+3) Clients who stay in either 'Banglore' or 'Manglore'
+```sql
+SELECT *
+FROM Cust_Master
+WHERE Cust_addr REGEXP '(^|,| )Banglore( |,|$)'
+   OR Cust_addr REGEXP '(^|,| )Manglore( |,|$)';
+```
+
+4) Customer names and product names they purchased
+```sql
+SELECT c.Cust_name, p.Product_name
+FROM Cust_Master AS c
+JOIN `Order` AS o ON o.Cust_no = c.Cust_no
+JOIN Product AS p ON p.Order_no = o.Order_no;
+```
+
+5) Create view View1 (Cust_name, Product_name)
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT c.Cust_name, p.Product_name
+FROM Cust_Master AS c
+JOIN `Order` AS o ON o.Cust_no = c.Cust_no
+JOIN Product AS p ON p.Order_no = o.Order_no;
+```
+
+6) Product name and quantity purchased by each customer
+```sql
+SELECT c.Cust_name, p.Product_name, o.Qty_Ordered
+FROM Cust_Master AS c
+JOIN `Order` AS o ON o.Cust_no = c.Cust_no
+JOIN Product AS p ON p.Order_no = o.Order_no
+ORDER BY c.Cust_name, p.Product_name;
+```
+
+7) Join operations (examples)
+```sql
+-- Inner join
+SELECT c.Cust_name, o.Order_no
+FROM Cust_Master c
+JOIN `Order` o ON o.Cust_no = c.Cust_no;
+
+-- Left join
+SELECT c.Cust_name, o.Order_no
+FROM Cust_Master c
+LEFT JOIN `Order` o ON o.Cust_no = c.Cust_no;
+
+-- Right join
+SELECT c.Cust_name, o.Order_no
+FROM Cust_Master c
+RIGHT JOIN `Order` o ON o.Cust_no = c.Cust_no;
+```
+
+MySQL Practical S4
+
+Schema and sample operations:
+
+```sql
+CREATE TABLE Cust_Master (
+  Cust_no   VARCHAR(20) PRIMARY KEY,
+  Cust_name VARCHAR(100) NOT NULL,
+  Cust_addr VARCHAR(200)
+);
+
+CREATE TABLE `Order` (
+  Order_no   VARCHAR(20) PRIMARY KEY,
+  Cust_no    VARCHAR(20) NOT NULL,
+  Order_date DATE NOT NULL,
+  Qty_Ordered INT NOT NULL,
+  CONSTRAINT fk_order_customer FOREIGN KEY (Cust_no)
+    REFERENCES Cust_Master(Cust_no)
+);
+
+CREATE TABLE Product (
+  Product_no   VARCHAR(20) PRIMARY KEY,
+  Product_name VARCHAR(100) NOT NULL,
+  Order_no     VARCHAR(20) NOT NULL,
+  CONSTRAINT fk_product_order FOREIGN KEY (Order_no)
+    REFERENCES `Order`(Order_no)
+);
+```
+
+Solutions:
+
+1) Customers with 'A' as second letter
+```sql
+SELECT Cust_name
+FROM Cust_Master
+WHERE Cust_name LIKE '_A%';
+```
+
+2) Orders from specific customers
+```sql
+SELECT *
+FROM `Order`
+WHERE Cust_no IN ('C1002','C1005','C1007','C1008');
+```
+
+3) Clients who stay in either 'Banglore' or 'Manglore'
+```sql
+SELECT *
+FROM Cust_Master
+WHERE Cust_addr REGEXP '(^|,| )Banglore( |,|$)'
+   OR Cust_addr REGEXP '(^|,| )Manglore( |,|$)';
+```
+
+4) Customer names and product names they purchased
+```sql
+SELECT c.Cust_name, p.Product_name
+FROM Cust_Master AS c
+JOIN `Order` AS o ON o.Cust_no = c.Cust_no
+JOIN Product AS p ON p.Order_no = o.Order_no;
+```
+
+5) Create view View1 (Cust_name, Product_name)
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT c.Cust_name, p.Product_name
+FROM Cust_Master AS c
+JOIN `Order` AS o ON o.Cust_no = c.Cust_no
+JOIN Product AS p ON p.Order_no = o.Order_no;
+```
+
+6) Product name and quantity purchased by each customer
+```sql
+SELECT c.Cust_name, p.Product_name, o.Qty_Ordered
+FROM Cust_Master AS c
+JOIN `Order` AS o ON o.Cust_no = c.Cust_no
+JOIN Product AS p ON p.Order_no = o.Order_no
+ORDER BY c.Cust_name, p.Product_name;
+```
+
+7) Perform different join operations (examples)
+```sql
+-- Inner join
+SELECT c.Cust_name, o.Order_no
+FROM Cust_Master c
+JOIN `Order` o ON o.Cust_no = c.Cust_no;
+
+-- Left join
+SELECT c.Cust_name, o.Order_no
+FROM Cust_Master c
+LEFT JOIN `Order` o ON o.Cust_no = c.Cust_no;
+
+-- Right join
+SELECT c.Cust_name, o.Order_no
+FROM Cust_Master c
+RIGHT JOIN `Order` o ON o.Cust_no = c.Cust_no;
+```
+
+

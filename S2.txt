@@ -1,0 +1,91 @@
+MySQL Practical S2
+
+Schema (same as S1). Key tables: Branch, Account, Customer, Depositor, Loan, Borrower.
+
+Solutions:
+
+1) Customers who have both account and loan
+```sql
+SELECT DISTINCT c.cust_name
+FROM Customer AS c
+JOIN Depositor AS d ON d.cust_name = c.cust_name
+JOIN Borrower  AS b ON b.cust_name = c.cust_name;
+```
+
+2) Customers who have an account or loan or both
+```sql
+SELECT cust_name FROM Depositor
+UNION
+SELECT cust_name FROM Borrower;
+```
+
+3) Customers who have account but no loan
+```sql
+SELECT DISTINCT d.cust_name
+FROM Depositor AS d
+LEFT JOIN Borrower AS b ON b.cust_name = d.cust_name
+WHERE b.cust_name IS NULL;
+```
+
+4) Average account balance at 'Wadia College' branch
+```sql
+SELECT AVG(balance) AS avg_balance
+FROM Account
+WHERE branch_name = 'Wadia College';
+```
+
+5) Number of depositors at each branch
+```sql
+SELECT a.branch_name, COUNT(DISTINCT d.cust_name) AS num_depositors
+FROM Account AS a
+JOIN Depositor AS d ON d.acc_no = a.acc_no
+GROUP BY a.branch_name
+ORDER BY a.branch_name;
+```
+
+MySQL Practical S2
+
+Schema (same as S1). Key tables: Branch, Account, Customer, Depositor, Loan, Borrower.
+
+Solutions:
+
+1) Customers who have both account and loan
+```sql
+SELECT DISTINCT c.cust_name
+FROM Customer AS c
+JOIN Depositor AS d ON d.cust_name = c.cust_name
+JOIN Borrower  AS b ON b.cust_name = c.cust_name;
+```
+
+2) Customers who have an account or loan or both
+```sql
+SELECT cust_name FROM Depositor
+UNION
+SELECT cust_name FROM Borrower;
+```
+
+3) Customers who have account but no loan
+```sql
+SELECT DISTINCT d.cust_name
+FROM Depositor AS d
+LEFT JOIN Borrower AS b ON b.cust_name = d.cust_name
+WHERE b.cust_name IS NULL;
+```
+
+4) Average account balance at 'Wadia College' branch
+```sql
+SELECT AVG(balance) AS avg_balance
+FROM Account
+WHERE branch_name = 'Wadia College';
+```
+
+5) Number of depositors at each branch
+```sql
+SELECT a.branch_name, COUNT(DISTINCT d.cust_name) AS num_depositors
+FROM Account AS a
+JOIN Depositor AS d ON d.acc_no = a.acc_no
+GROUP BY a.branch_name
+ORDER BY a.branch_name;
+```
+
+

@@ -1,0 +1,41 @@
+PL/SQL Practical P2 — Unnamed block for library fine
+
+```sql
+CREATE TABLE Borrower (
+  Rollin NUMBER,
+  Name VARCHAR2(100),
+  DateofIssue DATE,
+  NameofBook VARCHAR2(200),
+  Status CHAR(1)
+);
+
+CREATE TABLE Fine (
+  Roll_no NUMBER,
+  Date DATE,
+  Amt NUMBER(10,2)
+);
+```
+
+```sql
+DECLARE
+  v_roll Borrower.Rollin%TYPE := :p_roll;
+  v_book Borrower.NameofBook%TYPE := :p_book;
+  v_issue DATE;
+  v_days  NUMBER;
+  v_amt   NUMBER := 0;
+BEGIN
+  SELECT DateofIssue INTO v_issue FROM Borrower WHERE Rollin = v_roll AND NameofBook = v_book;
+  v_days := TRUNC(SYSDATE - v_issue);
+
+  IF v_days > 30 THEN v_amt := (30-15)*5 + (v_days-30)*50; -- as per prompt
+  ELSIF v_days BETWEEN 15 AND 30 THEN v_amt := v_days * 5; END IF;
+
+  UPDATE Borrower SET Status = 'R' WHERE Rollin = v_roll AND NameofBook = v_book;
+  IF v_amt > 0 THEN
+    INSERT INTO Fine(Roll_no, Date, Amt) VALUES (v_roll, SYSDATE, v_amt);
+  END IF;
+END;
+/
+```
+
+

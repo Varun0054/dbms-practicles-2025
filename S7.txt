@@ -1,0 +1,109 @@
+MySQL Practical S7
+
+Schema (same as S1): Branch, Account, Customer, Depositor, Loan, Borrower.
+
+Solutions:
+
+1) View1: customers in alphabetical order who have loan from Pune_Station
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT DISTINCT b.cust_name
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no
+WHERE l.branch_name = 'Pune_Station'
+ORDER BY b.cust_name ASC;
+```
+
+2) View2 on Branch (two columns) and I/U/D via base table
+```sql
+CREATE OR REPLACE VIEW View2 AS
+SELECT branch_name, branch_city FROM Branch;
+INSERT INTO Branch(branch_name, branch_city) VALUES ('Sample_Branch','Pune');
+UPDATE Branch SET branch_city = 'Mumbai' WHERE branch_name = 'Sample_Branch';
+DELETE FROM Branch WHERE branch_name = 'Sample_Branch';
+```
+
+3) View3 on Borrower and Depositor (one column each)
+```sql
+CREATE OR REPLACE VIEW View3 AS
+SELECT br.cust_name AS borrower_name, de.cust_name AS depositor_name
+FROM Borrower br
+CROSS JOIN Depositor de;
+```
+
+4) Union of left and right join for customers with account or loan or both
+```sql
+SELECT d.cust_name FROM Depositor d LEFT JOIN Borrower b ON b.cust_name = d.cust_name
+UNION
+SELECT b.cust_name FROM Borrower b RIGHT JOIN Depositor d ON d.cust_name = b.cust_name;
+```
+
+5) Create Simple and Unique index; 6) Show index info
+```sql
+CREATE INDEX idx_account_branch ON Account(branch_name);
+CREATE UNIQUE INDEX ux_customer_name ON Customer(cust_name);
+SHOW INDEX FROM Account; SHOW INDEX FROM Customer;
+```
+
+MySQL Practical S7
+
+Schema (same as S1): Branch, Account, Customer, Depositor, Loan, Borrower.
+
+Solutions:
+
+1) View1: customers in alphabetical order who have loan from Pune_Station branch
+```sql
+CREATE OR REPLACE VIEW View1 AS
+SELECT DISTINCT b.cust_name
+FROM Borrower AS b
+JOIN Loan AS l ON l.loan_no = b.loan_no
+WHERE l.branch_name = 'Pune_Station'
+ORDER BY b.cust_name ASC;
+```
+
+2) View2 on branch table (two columns) and perform I/U/D
+```sql
+CREATE OR REPLACE VIEW View2 AS
+SELECT branch_name, branch_city FROM Branch;
+
+-- Insert/Update/Delete on views depend on updatability rules; alternatively operate on base table:
+INSERT INTO Branch(branch_name, branch_city) VALUES ('Sample_Branch','Pune');
+UPDATE Branch SET branch_city = 'Mumbai' WHERE branch_name = 'Sample_Branch';
+DELETE FROM Branch WHERE branch_name = 'Sample_Branch';
+```
+
+3) View3 on borrower and depositor (one column from each) and I/U/D
+```sql
+CREATE OR REPLACE VIEW View3 AS
+SELECT br.cust_name AS borrower_name, de.cust_name AS depositor_name
+FROM Borrower br
+CROSS JOIN Depositor de;
+
+-- Typically not updatable; perform I/U/D on base tables instead.
+```
+
+4) Union of left and right join for all customers who have account or loan or both
+```sql
+-- Full outer join emulation using UNION of left and right joins
+SELECT d.cust_name AS cust_name
+FROM Depositor d
+LEFT JOIN Borrower b ON b.cust_name = d.cust_name
+UNION
+SELECT b.cust_name
+FROM Borrower b
+RIGHT JOIN Depositor d ON d.cust_name = b.cust_name;
+```
+
+5) Create Simple and Unique index
+```sql
+CREATE INDEX idx_account_branch ON Account(branch_name);
+CREATE UNIQUE INDEX ux_customer_name ON Customer(cust_name);
+```
+
+6) Display index information
+```sql
+SHOW INDEX FROM Account;
+SHOW INDEX FROM Customer;
+```
+
+

@@ -1,0 +1,20 @@
+PL/SQL Practical P7 — Function Age_calc (years, months, days)
+
+```sql
+CREATE OR REPLACE FUNCTION Age_calc(
+  p_dob IN DATE,
+  p_months OUT NUMBER,
+  p_days OUT NUMBER
+) RETURN NUMBER AS
+  v_years NUMBER;
+  v_now   DATE := SYSDATE;
+BEGIN
+  v_years := FLOOR(MONTHS_BETWEEN(v_now, p_dob)/12);
+  p_months := MOD(FLOOR(MONTHS_BETWEEN(v_now, p_dob)), 12);
+  p_days := TRUNC(v_now - ADD_MONTHS(p_dob, v_years*12 + p_months));
+  RETURN v_years;
+END;
+/
+```
+
+

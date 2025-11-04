@@ -1,0 +1,32 @@
+PL/SQL Practical P9 — Trigger to show salary difference on CUSTOMERS
+
+Note: The prompt mentions CUSTOMERS and salary; assuming table has
+columns: id, name, salary.
+
+```sql
+CREATE TABLE CUSTOMERS (
+  id NUMBER PRIMARY KEY,
+  name VARCHAR2(100),
+  salary NUMBER(10,2)
+);
+```
+
+```sql
+CREATE OR REPLACE TRIGGER trg_cust_salary_diff
+AFTER INSERT OR UPDATE OR DELETE ON CUSTOMERS
+FOR EACH ROW
+DECLARE v_msg VARCHAR2(200);
+BEGIN
+  IF INSERTING THEN
+    v_msg := 'Inserted salary = '||:NEW.salary;
+  ELSIF UPDATING THEN
+    v_msg := 'Salary diff = '||TO_CHAR(:NEW.salary - :OLD.salary);
+  ELSIF DELETING THEN
+    v_msg := 'Deleted salary = '||:OLD.salary;
+  END IF;
+  DBMS_OUTPUT.PUT_LINE(v_msg);
+END;
+/
+```
+
+
